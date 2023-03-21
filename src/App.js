@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App=()=>{
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState([]);
+
+  const nexthandler=async()=>{
+    const res = await fetch('https://randomuser.me/api');
+    const {results} = await res.json();
+    setData(results);
+    setIsLoading(true)
+    localStorage.setItem('dataKey', JSON.stringify(data))
+  }
+  useEffect(() => {
+    nexthandler();
+  }, []);
+  
+  console.log(data);
+  return(
+    <>
+    <h1>Fetch API</h1>
+    {(data && data.length>0 && data.map((item,index)=>{
+      
+       return(
+         <>
+         <div className="card" key={index}>
+           
+           <h3 key={index}>{item.name.title} {item.name.first} {item.name.last}</h3>
+           
+           <p key={index+2}>{item.email}</p>
+          
+
+           {console.log(index+1)}
+         
+        <button onClick={(index)=>nexthandler(index)} > Next </button>
+        </div>
+         </>
+       )
+     }))}
+    </>
+  )
 }
-
 export default App;
